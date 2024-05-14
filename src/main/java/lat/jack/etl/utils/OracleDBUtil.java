@@ -13,12 +13,18 @@ public class OracleDBUtil  {
     private static final String OP_DB_USERNAME = EnvironmentVariables.getVariable("OP_DB_USER");
     private static final String OP_DB_PASSWORD = EnvironmentVariables.getVariable("OP_DB_PASSWORD");
 
+    // Staging Database Configuration
+    private static final String STG_DB_URL = EnvironmentVariables.getVariable("STG_DB_URL");
+    private static final String STG_DB_USERNAME = EnvironmentVariables.getVariable("STG_DB_USER");
+    private static final String STG_DB_PASSWORD = EnvironmentVariables.getVariable("STG_DB_PASSWORD");
+
     // Data Warehouse Database Configuration
     private static final String DW_DB_URL = EnvironmentVariables.getVariable("DW_DB_URL");
     private static final String DW_DB_USERNAME = EnvironmentVariables.getVariable("DW_DB_USER");
     private static final String DW_DB_PASSWORD = EnvironmentVariables.getVariable("DW_DB_PASSWORD");
 
     private static final DataSource opDataSource = setupDataSource(OP_DB_URL, OP_DB_USERNAME, OP_DB_PASSWORD);
+    private static final DataSource stgDataSource = setupDataSource(STG_DB_URL, STG_DB_USERNAME, STG_DB_PASSWORD);
     private static final DataSource dwDataSource = setupDataSource(DW_DB_URL, DW_DB_USERNAME, DW_DB_PASSWORD);
 
     private static DataSource setupDataSource(String url, String username, String password) {
@@ -42,6 +48,10 @@ public class OracleDBUtil  {
 
     public static Connection getOpDataSource() throws SQLException {
         return opDataSource.getConnection();
+    }
+
+    public static Connection getStgDataSource() throws SQLException {
+        return stgDataSource.getConnection();
     }
 
     public static Connection getDwDataSource() throws SQLException {
