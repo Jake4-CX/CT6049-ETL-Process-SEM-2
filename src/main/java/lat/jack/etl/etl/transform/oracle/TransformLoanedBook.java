@@ -103,27 +103,27 @@ public class TransformLoanedBook {
 
         if (loanedBookCache.stream().noneMatch(lb -> lb.getUserId() == userId && lb.getBookId() == bookId)) {
             try (Connection connection = OracleDBUtil.getStgDataSource()) {
-                int loanedAtDateId = InsertDimTime.insertDimTime(connection, loanedBook.getLoanedAt());
+                DimTime loanedAtDate = InsertDimTime.insertDimTime(connection, loanedBook.getLoanedAt());
 
                 PreparedStatement statement = connection.prepareStatement("INSERT INTO FACTLOANEDBOOKS (USERID, BOOKID, LOANEDATTIMEID, RETURNEDATTIMEID, FINEAMOUNT, PAIDATTIMEID) VALUES (?, ?, ?, ?, ?, ?)", new String[] {"LOANEDBOOKSID"});
                 statement.setInt(1, userId);
                 statement.setInt(2, bookId);
-                statement.setInt(3, loanedAtDateId);
+                statement.setInt(3, loanedAtDate.getDateId());
 
-                int returnedAtDateId = 0;
+                DimTime returnedAtDate = null;
                 if (loanedBook.getReturnedAt() != null) {
-                    returnedAtDateId =  InsertDimTime.insertDimTime(connection, loanedBook.getReturnedAt());
-                    statement.setInt(4, returnedAtDateId);
+                    returnedAtDate =  InsertDimTime.insertDimTime(connection, loanedBook.getReturnedAt());
+                    statement.setInt(4, returnedAtDate.getDateId());
                 } else {
                     statement.setNull(4, Types.INTEGER);
                 }
 
                 statement.setDouble(5, fineAmount);
 
-                int paidAtDateId = 0;
+                DimTime paidAtDate = null;
                 if (loanFine != null && loanFine.getPaidAt() != null) {
-                    paidAtDateId = InsertDimTime.insertDimTime(connection, loanFine.getPaidAt());
-                    statement.setInt(6, paidAtDateId);
+                    paidAtDate = InsertDimTime.insertDimTime(connection, loanFine.getPaidAt());
+                    statement.setInt(6, paidAtDate.getDateId());
                 } else {
                     statement.setNull(6, Types.INTEGER);
                 }
@@ -136,11 +136,7 @@ public class TransformLoanedBook {
                 try (ResultSet resultSet = statement.getGeneratedKeys()) {
                     if (resultSet.next()) {
                         loanedBookId = resultSet.getInt(1);
-                        if (loanFine != null && paidAtDateId != 0) {
-                            loanedBookCache.add(new FactLoanedBook(loanedBookId, bookId, userId, new DimTime(loanedAtDateId), (returnedAtDateId == 0 ? new DimTime(returnedAtDateId) : null), fineAmount, new DimTime(paidAtDateId)));
-                        } else {
-                            loanedBookCache.add(new FactLoanedBook(loanedBookId, bookId, userId, new DimTime(loanedAtDateId), (returnedAtDateId == 0 ? new DimTime(returnedAtDateId) : null), fineAmount, null));
-                        }
+                        loanedBookCache.add(new FactLoanedBook(loanedBookId, userId, bookId, loanedAtDate, returnedAtDate, fineAmount, paidAtDate));
                     } else {
                         throw new SQLException("Failed to insert FactLoanedBook record.");
                     }

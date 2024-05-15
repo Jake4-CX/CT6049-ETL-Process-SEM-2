@@ -110,13 +110,13 @@ public class TransformBook {
 
         if (bookCache.stream().noneMatch(b -> b.getBookName().equals(bookTitle))) {
             try (Connection connection = OracleDBUtil.getStgDataSource()) {
-                int publicationTimeId = InsertDimTime.insertDimTime(connection, bookPublishedDate);
+                DimTime publicationTime = InsertDimTime.insertDimTime(connection, bookPublishedDate);
 
                 PreparedStatement statement = connection.prepareStatement("INSERT INTO DIMBOOKS (BOOKNAME, BOOKISBN, BOOKQUANTITY, BOOKPUBLICATIONTIMEID, BOOKAUTHORID, BOOKCATEGORYID) VALUES (?, ?, ?, ?, ?, ?)", new String[] {"BOOKID"});
                 statement.setString(1, bookTitle);
                 statement.setString(2, bookISBN);
                 statement.setInt(3, bookQuantity);
-                statement.setInt(4, publicationTimeId);
+                statement.setInt(4, publicationTime.getDateId());
                 statement.setInt(5, bookAuthorId);
                 statement.setInt(6, bookCategoryId);
 
@@ -128,7 +128,7 @@ public class TransformBook {
                 try (ResultSet resultSet = statement.getGeneratedKeys()) {
                     if (resultSet.next()) {
                         bookId = resultSet.getInt(1);
-                        bookCache.add(new DimBook(bookId, bookTitle, bookISBN, bookQuantity, new DimTime(publicationTimeId), bookAuthorId, bookCategoryId));
+                        bookCache.add(new DimBook(bookId, bookTitle, bookISBN, bookQuantity, publicationTime, bookAuthorId, bookCategoryId));
                     } else {
                         throw new SQLException("Failed to insert DimBook record.");
                     }

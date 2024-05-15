@@ -3,7 +3,6 @@ package lat.jack.etl.etl.transform;
 import lat.jack.etl.etl.extract.oracle.models.OracleData;
 import lat.jack.etl.etl.transform.oracle.*;
 import lat.jack.etl.models.*;
-import lat.jack.etl.utils.utils;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,7 +17,7 @@ public class DataTransformer {
 
     private static final Logger logger = Logger.getLogger(DataTransformer.class.getName());
 
-    public void transformOracle(OracleData oracleData) {
+    public TransformedCollection transformOracle(OracleData oracleData) {
         System.out.println("Transforming Oracle Data: " + oracleData);
 
         logger.info("Transforming Authors");
@@ -37,5 +36,13 @@ public class DataTransformer {
         List<FactLoanedBook> loanedBooks = transformLoanedBook.transformLoanedBooks(oracleData.getLoanedBooks(), oracleData.getLoanFines(), users, oracleData.getUsers(), books, oracleData.getBooks());
 
         System.out.println("Transformed Oracle Data: " + oracleData);
+
+        return new TransformedCollection(
+                authors,
+                categories,
+                users,
+                books,
+                loanedBooks
+        );
     }
 }

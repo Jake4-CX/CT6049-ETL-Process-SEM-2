@@ -6,23 +6,23 @@ public class DimTime {
 
     private int dateId;
     private java.sql.Date date;
-    private int year;
-    private int quarter;
-    private int month;
-    private int day;
-    private int weekOfYear;
+    private int minute;
+    private int hour;
     private int dayOfWeek;
+    private int month;
+    private int quarter;
+    private int year;
     private boolean isWeekend;
 
-    public DimTime(int dateId, Date date, int year, int quarter, int month, int day, int weekOfYear, int dayOfWeek, boolean isWeekend) {
+    public DimTime(int dateId, Date date, int minute, int hour, int dayOfWeek, int month, int quarter, int year, boolean isWeekend) {
         this.dateId = dateId;
         this.date = date;
-        this.year = year;
-        this.quarter = quarter;
-        this.month = month;
-        this.day = day;
-        this.weekOfYear = weekOfYear;
+        this.minute = minute;
+        this.hour = hour;
         this.dayOfWeek = dayOfWeek;
+        this.month = month;
+        this.quarter = quarter;
+        this.year = year;
         this.isWeekend = isWeekend;
     }
 
@@ -49,20 +49,28 @@ public class DimTime {
         this.date = date;
     }
 
-    public int getYear() {
-        return year;
+    public int getMinute() {
+        return minute;
     }
 
-    public void setYear(int year) {
-        this.year = year;
+    public void setMinute(int minute) {
+        this.minute = minute;
     }
 
-    public int getQuarter() {
-        return quarter;
+    public int getHour() {
+        return hour;
     }
 
-    public void setQuarter(int quarter) {
-        this.quarter = quarter;
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public int getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(int dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
     }
 
     public int getMonth() {
@@ -73,28 +81,20 @@ public class DimTime {
         this.month = month;
     }
 
-    public int getDay() {
-        return day;
+    public int getQuarter() {
+        return quarter;
     }
 
-    public void setDay(int day) {
-        this.day = day;
+    public void setQuarter(int quarter) {
+        this.quarter = quarter;
     }
 
-    public int getWeekOfYear() {
-        return weekOfYear;
+    public int getYear() {
+        return year;
     }
 
-    public void setWeekOfYear(int weekOfYear) {
-        this.weekOfYear = weekOfYear;
-    }
-
-    public int getDayOfWeek() {
-        return dayOfWeek;
-    }
-
-    public void setDayOfWeek(int dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public boolean isWeekend() {
